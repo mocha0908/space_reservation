@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>イベント開催・レンタル申込 | トレカキングダム</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <style>
+        body { padding: 20px; max-width: 800px; margin: 0 auto; font-family: sans-serif; }
+        header { text-align: center; margin-bottom: 30px; }
+        .highlight-box { background-color: #f0f9ff; border: 2px solid #007bc7; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        .point-box { background-color: #fff8e1; border: 2px solid #ffb300; padding: 15px; border-radius: 8px; }
+        .rule-list { font-size: 0.9em; }
+        h2 { border-bottom: 2px solid #eee; padding-bottom: 10px; }
+        .price-simulation { display: flex; flex-wrap: wrap; gap: 20px; }
+        .price-col { flex: 1; min-width: 250px; }
+        .profit { color: #d32f2f; font-weight: bold; font-size: 1.2em; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🏆 イベント開催・スペース貸出申込</h1>
+        <p>あなたの自主大会や交流会をトレカキングダムで開催しませんか？</p>
+    </header>
+
+    <main>
+        <section class="highlight-box">
+            <h3>💰 開催プラン概要</h3>
+            <p><strong>貸出日時：</strong> 12:00 - 19:00（7時間）<br>
+            <strong>会場費：</strong> 32,000円（税込）</p>
+            
+            <article class="point-box">
+                <h4>✨ お支払い分を「全額ポイント還元」！</h4>
+                <p>会場費32,000円をお支払いいただくと、そのまま<strong>【32,000ポイント】</strong>として主催者様にお渡しします。<br>
+                このポイントは参加賞や上位賞として参加者に配布可能です。</p>
+                <hr>
+                <strong>【ポイント配分ルール】</strong>
+                <ul>
+                    <li>参加者1人あたり <strong>250pt以上の配布が必須</strong> です。</li>
+                    <li>残りのポイントは自由に配分OK（優勝賞品など）。</li>
+                </ul>
+            </article>
+
+            <details>
+                <summary><strong>📊 収支シミュレーションを見る（32名参加の場合）</strong></summary>
+                <div class="price-simulation">
+                    <div class="price-col">
+                        <h5>① 主催者様の収益予測</h5>
+                        <ul>
+                            <li>参加費：2,000円 × 32名 ＝ 64,000円</li>
+                            <li>会場費：-32,000円</li>
+                            <li class="profit">👉 手元に残る利益：32,000円</li>
+                        </ul>
+                    </div>
+                    <div class="price-col">
+                        <h5>② ポイントの使い道（例）</h5>
+                        <ul>
+                            <li>保有ポイント：32,000pt</li>
+                            <li>参加賞(必須)：250pt × 32名 ＝ -8,000pt</li>
+                            <li class="profit">👉 残り 24,000pt を上位賞へ！</li>
+                            <li><small>（例：優勝10,000pt / 2位5,000pt...など自由）</small></li>
+                        </ul>
+                    </div>
+                </div>
+            </details>
+        </section>
+
+        <form id="reserveForm">
+            <h2>📝 申し込み情報</h2>
+
+            <label for="name">お名前（主催者名）
+                <input type="text" id="name" name="name" required placeholder="例：キングダム太郎">
+            </label>
+
+            <label for="date">利用希望日
+                <input type="date" id="date" name="date" required>
+            </label>
+
+            <label for="purpose">利用用途（大会名・形式など）
+                <textarea id="purpose" name="purpose" rows="3" required placeholder="例：第1回 キングダム杯（自主大会）。予選スイスドロー・決勝トナメ形式など"></textarea>
+            </label>
+
+            <label for="tel">電話番号
+                <input type="tel" id="tel" name="tel" required placeholder="090-0000-0000">
+            </label>
+
+            <h2>⚠️ 確認事項</h2>
+            <div class="rule-list">
+                <p>以下の条件を必ずご確認ください。</p>
+                <label>
+                    <input type="checkbox" required>
+                    参加者全員の「会員登録」が必須となることに同意します
+                </label>
+                <label>
+                    <input type="checkbox" required>
+                    店舗スタッフによる運営補助（ジャッジ・マッチング等）は行えないことを理解しました
+                </label>
+                <label>
+                    <input type="checkbox" required>
+                    【設備】トイレ（男女別）、モニター（Type-C/HDMI接続可）の使用が可能であることを確認しました
+                </label>
+            </div>
+
+            <button type="submit" id="submitBtn" style="margin-top: 20px;">上記の内容で申し込む</button>
+        </form>
+    </main>
+
+    <script>
+        // 設定されたGASのURL
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyb1L9lbXiCFtR4hypvZSurkCHRLYwZIHO4vRxtU8ipyElckZGV5az30Kn-Dcr74qrN/exec';
+
+        const form = document.getElementById('reserveForm');
+        const btn = document.getElementById('submitBtn');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            btn.disabled = true;
+            btn.innerText = "送信中...";
+
+            const formData = new FormData(form);
+            
+            fetch(SCRIPT_URL, { method: 'POST', body: formData })
+                .then(response => {
+                    alert('お申し込みありがとうございます！\n内容を確認後、担当者よりご連絡いたします。');
+                    form.reset();
+                    btn.disabled = false;
+                    btn.innerText = "上記の内容で申し込む";
+                })
+                .catch(error => {
+                    // GAS特有のCORSエラーが出ても実際は送信できているケースが多いため、
+                    // エラーメッセージが出てもスプレッドシートを確認してください
+                    alert('送信リクエストを行いました。\n（念のため、スプレッドシートをご確認ください）');
+                    // 実際には成功時の挙動へ誘導
+                    form.reset();
+                    btn.disabled = false;
+                    btn.innerText = "上記の内容で申し込む";
+                });
+        });
+    </script>
+</body>
+</html>
