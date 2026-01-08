@@ -1,120 +1,386 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="ja" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>イベント開催・レンタル申込 | トレカキングダム</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    
     <style>
-        body { padding: 20px; max-width: 800px; margin: 0 auto; font-family: sans-serif; }
-        header { text-align: center; margin-bottom: 30px; }
-        .highlight-box { background-color: #f0f9ff; border: 2px solid #007bc7; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-        .point-box { background-color: #fff8e1; border: 2px solid #ffb300; padding: 15px; border-radius: 8px; }
-        .rule-list { font-size: 0.9em; }
-        h2 { border-bottom: 2px solid #eee; padding-bottom: 10px; }
-        .price-simulation { display: flex; flex-wrap: wrap; gap: 20px; }
-        .price-col { flex: 1; min-width: 250px; }
-        .profit { color: #d32f2f; font-weight: bold; font-size: 1.2em; }
+        :root {
+            --primary: #ff0055;
+            --primary-hover: #cc0044;
+            --background: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #e0e0e0;
+            --accent-gold: #ffd700;
+            --accent-blue: #00e5ff;
+            --success: #00ff88;
+            --error: #ff3333;
+        }
+
+        body {
+            background-color: var(--background);
+            color: var(--text-main);
+            font-family: 'Roboto', sans-serif;
+            padding-bottom: 50px;
+        }
+
+        /* ヘッダーデザイン */
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #1a0b14 0%, #000000 100%);
+            border-bottom: 2px solid var(--primary);
+            margin-bottom: 30px;
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.2);
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px var(--primary);
+        }
+
+        /* カードコンテナ */
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .card h3 {
+            border-left: 4px solid var(--primary);
+            padding-left: 15px;
+            color: #fff;
+            margin-bottom: 20px;
+        }
+
+        /* シミュレーションエリア */
+        .sim-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .sim-grid { grid-template-columns: 1fr; }
+        }
+
+        .result-box {
+            background: #000;
+            border: 1px solid #444;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .result-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            font-family: 'Orbitron', sans-serif;
+            display: block;
+        }
+        .text-gold { color: var(--accent-gold); }
+        .text-blue { color: var(--accent-blue); }
+        .text-green { color: var(--success); }
+        .text-red { color: var(--error); }
+
+        /* 入力フォーム調整 */
+        input[type="number"], input[type="text"], input[type="tel"], input[type="date"], textarea {
+            background-color: #2a2a2a;
+            border: 1px solid #444;
+            color: #fff;
+        }
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 5px var(--primary);
+        }
+
+        label small { color: #888; }
+
+        /* 送信ボタン */
+        button[type="submit"] {
+            background: linear-gradient(45deg, var(--primary), #ff5e00);
+            border: none;
+            font-weight: bold;
+            font-size: 1.2em;
+            padding: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: transform 0.2s;
+        }
+        button[type="submit"]:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.6);
+        }
+
+        /* ポイント残量バー */
+        .progress-bar-bg {
+            background: #333;
+            height: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            background: var(--accent-blue);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s ease, background-color 0.3s;
+        }
+
     </style>
 </head>
 <body>
 
     <header>
-        <h1>🏆 イベント開催・スペース貸出申込</h1>
-        <p>あなたの自主大会や交流会をトレカキングダムで開催しませんか？</p>
+        <h1>Duel Space Booking</h1>
+        <p>トレカキングダム イベント開催・レンタル申込フォーム</p>
     </header>
 
-    <main>
-        <section class="highlight-box">
-            <h3>💰 開催プラン概要</h3>
-            <p><strong>貸出日時：</strong> 12:00 - 19:00（7時間）<br>
-            <strong>会場費：</strong> 32,000円（税込）</p>
-            
-            <article class="point-box">
-                <h4>✨ お支払い分を「全額ポイント還元」！</h4>
-                <p>会場費32,000円をお支払いいただくと、そのまま<strong>【32,000ポイント】</strong>として主催者様にお渡しします。<br>
-                このポイントは参加賞や上位賞として参加者に配布可能です。</p>
-                <hr>
-                <strong>【ポイント配分ルール】</strong>
-                <ul>
-                    <li>参加者1人あたり <strong>250pt以上の配布が必須</strong> です。</li>
-                    <li>残りのポイントは自由に配分OK（優勝賞品など）。</li>
-                </ul>
-            </article>
+    <main class="container">
 
-            <details>
-                <summary><strong>📊 収支シミュレーションを見る（32名参加の場合）</strong></summary>
-                <div class="price-simulation">
-                    <div class="price-col">
-                        <h5>① 主催者様の収益予測</h5>
-                        <ul>
-                            <li>参加費：2,000円 × 32名 ＝ 64,000円</li>
-                            <li>会場費：-32,000円</li>
-                            <li class="profit">👉 手元に残る利益：32,000円</li>
-                        </ul>
-                    </div>
-                    <div class="price-col">
-                        <h5>② ポイントの使い道（例）</h5>
-                        <ul>
-                            <li>保有ポイント：32,000pt</li>
-                            <li>参加賞(必須)：250pt × 32名 ＝ -8,000pt</li>
-                            <li class="profit">👉 残り 24,000pt を上位賞へ！</li>
-                            <li><small>（例：優勝10,000pt / 2位5,000pt...など自由）</small></li>
-                        </ul>
+        <section class="card">
+            <h3>Step 1. 開催プランと定員</h3>
+            <div class="grid">
+                <div>
+                    <strong>📦 会場レンタル料</strong>
+                    <div class="result-value">¥32,000</div>
+                    <small>（時間：12:00 - 19:00）</small>
+                </div>
+                <div>
+                    <strong>💎 ポイント還元</strong>
+                    <div class="result-value text-blue">32,000 pt</div>
+                    <small>会場費全額を賞品ポイントとして還元！</small>
+                </div>
+                <div>
+                    <strong>👥 最大定員</strong>
+                    <div class="result-value">32名</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="card">
+            <h3>Step 2. 収支＆賞品シミュレーション</h3>
+            <p><small>スライダーを動かして、あなたの大会プランを作成してください。この内容は自動的に申し込みフォームに反映されます。</small></p>
+            
+            <div class="sim-grid">
+                <div>
+                    <h4 style="border-bottom: 1px solid #444; padding-bottom: 5px;">💰 収益予測</h4>
+                    <label>
+                        参加費設定 (1人あたり)
+                        <input type="number" id="entryFee" value="2000" min="0" step="100">
+                    </label>
+                    <label>
+                        想定参加人数 (最大32名)
+                        <input type="range" id="playerCountRange" min="1" max="32" value="32">
+                        <div style="display:flex; justify-content:space-between;">
+                            <span>1名</span>
+                            <span id="playerCountDisplay" style="font-weight:bold; color:var(--primary);">32名</span>
+                            <span>32名</span>
+                        </div>
+                    </label>
+                    
+                    <div class="result-box">
+                        <small>主催者手残り利益 (売上 - 会場費)</small>
+                        <span id="organizerProfit" class="result-value text-gold">¥32,000</span>
                     </div>
                 </div>
-            </details>
+
+                <div>
+                    <h4 style="border-bottom: 1px solid #444; padding-bottom: 5px;">🎁 賞品ポイント配分 (総額32,000pt)</h4>
+                    
+                    <label>
+                        参加賞 (全員) <small>※最低250pt必須</small>
+                        <input type="number" id="prizePart" value="250" min="250" step="10">
+                    </label>
+
+                    <div class="grid">
+                        <label>優勝 <input type="number" id="prize1st" value="10000" step="100"></label>
+                        <label>準優勝 <input type="number" id="prize2nd" value="5000" step="100"></label>
+                    </div>
+                    <div class="grid">
+                        <label>Best4 <small>(各1名)</small> <input type="number" id="prizeTop4" value="2500" step="100"></label>
+                        <label>Best8 <small>(各1名)</small> <input type="number" id="prizeTop8" value="0" step="100"></label>
+                    </div>
+
+                    <div class="result-box">
+                        <small>未配分の残りポイント</small>
+                        <span id="remainingPoints" class="result-value text-blue">0 pt</span>
+                        <div class="progress-bar-bg">
+                            <div id="pointBar" class="progress-bar-fill"></div>
+                        </div>
+                        <small id="pointStatus" style="color:#888;">配分完了！</small>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <form id="reserveForm">
-            <h2>📝 申し込み情報</h2>
+            <section class="card">
+                <h3>Step 3. 申し込み情報入力</h3>
 
-            <label for="name">お名前（主催者名）
-                <input type="text" id="name" name="name" required placeholder="例：キングダム太郎">
-            </label>
+                <label>お名前 (主催者名)
+                    <input type="text" name="name" required placeholder="例：キングダム太郎">
+                </label>
 
-            <label for="date">利用希望日
-                <input type="date" id="date" name="date" required>
-            </label>
+                <label>利用希望日
+                    <input type="date" name="date" required>
+                </label>
 
-            <label for="purpose">利用用途（大会名・形式など）
-                <textarea id="purpose" name="purpose" rows="3" required placeholder="例：第1回 キングダム杯（自主大会）。予選スイスドロー・決勝トナメ形式など"></textarea>
-            </label>
+                <label>電話番号
+                    <input type="tel" name="tel" required placeholder="090-0000-0000">
+                </label>
 
-            <label for="tel">電話番号
-                <input type="tel" id="tel" name="tel" required placeholder="090-0000-0000">
-            </label>
+                <input type="hidden" name="purpose" id="purposeHidden">
 
-            <h2>⚠️ 確認事項</h2>
-            <div class="rule-list">
-                <p>以下の条件を必ずご確認ください。</p>
+                <label>備考・その他 (任意)
+                    <textarea id="userMemo" rows="2" placeholder="特定のタイトル、独自のルールなどがあれば記載してください"></textarea>
+                </label>
+
+                <hr style="border-color:#444;">
+
                 <label>
                     <input type="checkbox" required>
-                    参加者全員の「会員登録」が必須となることに同意します
+                    <strong>【重要】参加者全員の「会員登録」が必須です</strong>
                 </label>
                 <label>
                     <input type="checkbox" required>
-                    店舗スタッフによる運営補助（ジャッジ・マッチング等）は行えないことを理解しました
+                    店舗スタッフは運営補助（ジャッジ等）を行えません
                 </label>
                 <label>
                     <input type="checkbox" required>
-                    【設備】トイレ（男女別）、モニター（Type-C/HDMI接続可）の使用が可能であることを確認しました
+                    トイレ・モニター(HDMI/Type-C)の使用可
                 </label>
-            </div>
 
-            <button type="submit" id="submitBtn" style="margin-top: 20px;">上記の内容で申し込む</button>
+                <button type="submit" id="submitBtn" style="width:100%; margin-top:20px;">
+                    このプランで予約を申し込む
+                </button>
+            </section>
         </form>
+
     </main>
 
     <script>
-        // 設定されたGASのURL
+        // ★ここにGoogle Apps ScriptのURLを貼る
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyb1L9lbXiCFtR4hypvZSurkCHRLYwZIHO4vRxtU8ipyElckZGV5az30Kn-Dcr74qrN/exec';
 
+        // --- シミュレーション ロジック ---
+        const RENT_FEE = 32000;
+        const TOTAL_POINTS = 32000;
+        const MAX_PLAYERS = 32;
+
+        const inputs = {
+            entryFee: document.getElementById('entryFee'),
+            countRange: document.getElementById('playerCountRange'),
+            countDisplay: document.getElementById('playerCountDisplay'),
+            part: document.getElementById('prizePart'),
+            p1: document.getElementById('prize1st'),
+            p2: document.getElementById('prize2nd'),
+            p4: document.getElementById('prizeTop4'), // 2名分
+            p8: document.getElementById('prizeTop8'), // 4名分
+        };
+
+        const displays = {
+            profit: document.getElementById('organizerProfit'),
+            remPoints: document.getElementById('remainingPoints'),
+            status: document.getElementById('pointStatus'),
+            bar: document.getElementById('pointBar'),
+            purposeHidden: document.getElementById('purposeHidden'),
+            userMemo: document.getElementById('userMemo')
+        };
+
+        function calculate() {
+            // 値の取得
+            let players = parseInt(inputs.countRange.value);
+            let fee = parseInt(inputs.entryFee.value) || 0;
+            let partPt = parseInt(inputs.part.value) || 0;
+            let p1 = parseInt(inputs.p1.value) || 0;
+            let p2 = parseInt(inputs.p2.value) || 0;
+            let p4 = parseInt(inputs.p4.value) || 0;
+            let p8 = parseInt(inputs.p8.value) || 0;
+
+            // 表示更新
+            inputs.countDisplay.textContent = players + "名";
+
+            // 1. 収益計算
+            let revenue = fee * players;
+            let profit = revenue - RENT_FEE;
+            displays.profit.textContent = "¥" + profit.toLocaleString();
+            displays.profit.className = profit >= 0 ? "result-value text-gold" : "result-value text-red";
+
+            // 2. ポイント計算
+            // Best4は3位と4位の2名、Best8は5位~8位の4名
+            // 参加賞は全員に配る
+            let usedPoints = (partPt * players) + p1 + p2 + (p4 * 2) + (p8 * 4);
+            let remaining = TOTAL_POINTS - usedPoints;
+
+            displays.remPoints.textContent = remaining.toLocaleString() + " pt";
+            
+            // プログレスバーと警告
+            let usagePercent = (usedPoints / TOTAL_POINTS) * 100;
+            if (usagePercent > 100) usagePercent = 100;
+            displays.bar.style.width = usagePercent + "%";
+
+            if (remaining < 0) {
+                displays.remPoints.className = "result-value text-red";
+                displays.status.textContent = "⚠️ ポイントが不足しています！配分を減らしてください";
+                displays.status.style.color = "#ff3333";
+                displays.bar.style.backgroundColor = "#ff3333";
+                document.getElementById('submitBtn').disabled = true; // 送信不可にする
+                document.getElementById('submitBtn').innerText = "ポイント配分を修正してください";
+            } else {
+                displays.remPoints.className = "result-value text-blue";
+                displays.status.textContent = "この配分でOK";
+                displays.status.style.color = "#00ff88";
+                displays.bar.style.backgroundColor = "#00e5ff";
+                document.getElementById('submitBtn').disabled = false;
+                document.getElementById('submitBtn').innerText = "このプランで予約を申し込む";
+            }
+
+            updateHiddenPurpose(players, fee, profit, partPt, p1, p2, p4, p8);
+        }
+
+        function updateHiddenPurpose(players, fee, profit, part, p1, p2, p4, p8) {
+            // スプレッドシートの「利用用途」欄に送るテキストを作成
+            let planText = `【大会プラン】\n` +
+                           `・参加費: ${fee}円 × ${players}名想定\n` +
+                           `・予想利益: ${profit}円\n` +
+                           `・ポイント配分: 参加賞${part}pt / 優勝${p1}pt / 2位${p2}pt / Best4 ${p4}pt / Best8 ${p8}pt\n`;
+            
+            // ユーザーの自由記述メモがあれば追加
+            let memo = displays.userMemo.value;
+            displays.purposeHidden.value = planText + (memo ? `\n【備考】\n${memo}` : "");
+        }
+
+        // イベントリスナー登録
+        Object.values(inputs).forEach(input => {
+            input.addEventListener('input', calculate);
+        });
+        displays.userMemo.addEventListener('input', calculate);
+
+        // 初期計算実行
+        calculate();
+
+
+        // --- 送信処理 ---
         const form = document.getElementById('reserveForm');
         const btn = document.getElementById('submitBtn');
 
         form.addEventListener('submit', e => {
             e.preventDefault();
+            
+            // 送信直前に値を再セット（念のため）
+            calculate();
+
             btn.disabled = true;
             btn.innerText = "送信中...";
 
@@ -122,19 +388,16 @@
             
             fetch(SCRIPT_URL, { method: 'POST', body: formData })
                 .then(response => {
-                    alert('お申し込みありがとうございます！\n内容を確認後、担当者よりご連絡いたします。');
+                    alert('✅ 申し込みが完了しました！\n\n店舗担当者より折り返しご連絡いたします。\n（確定まで今しばらくお待ちください）');
                     form.reset();
-                    btn.disabled = false;
-                    btn.innerText = "上記の内容で申し込む";
+                    // リセット後、初期値を再計算
+                    setTimeout(calculate, 100);
                 })
                 .catch(error => {
-                    // GAS特有のCORSエラーが出ても実際は送信できているケースが多いため、
-                    // エラーメッセージが出てもスプレッドシートを確認してください
-                    alert('送信リクエストを行いました。\n（念のため、スプレッドシートをご確認ください）');
-                    // 実際には成功時の挙動へ誘導
+                    // GASは成功時もCORSエラーっぽく見えることがあるため
+                    alert('✅ 送信リクエスト完了\n\n念のためスプレッドシートをご確認ください。');
                     form.reset();
-                    btn.disabled = false;
-                    btn.innerText = "上記の内容で申し込む";
+                    setTimeout(calculate, 100);
                 });
         });
     </script>
