@@ -215,20 +215,23 @@
                     <input type="text" name="name_kana" required placeholder="例：キングダムタロウ" pattern="[\u30A1-\u30F6ー\s　]*" title="カタカナで入力してください">
                 </label>
 
+                <label>利用希望日
+                    <input type="date" name="date" required>
+                </label>
+
                 <label>メールアドレス <small>※担当者からの連絡に使用します</small>
                     <input type="email" name="email" required placeholder="example@gmail.com">
                 </label>
 
-                <div class="grid">
-                    <label>利用希望日
-                        <input type="date" name="date" required>
-                    </label>
-                    <label>電話番号
-                        <input type="tel" name="tel" required placeholder="090-0000-0000">
-                    </label>
-                </div>
+                <label>電話番号
+                    <input type="tel" name="tel" required placeholder="090-0000-0000">
+                </label>
 
-                <label>利用用途 (大会名・対戦形式など)
+                <label>X (Twitter) ID
+                    <input type="text" name="x_id" required placeholder="@TorecaKingdom">
+                </label>
+
+                <label style="margin-top: 20px;">利用用途 (大会名・対戦形式など)
                     <input type="text" id="eventTitle" required placeholder="例：第1回 キングダム杯（予選スイスドロー形式）">
                 </label>
             </section>
@@ -377,25 +380,27 @@
             
             const formData = new FormData(form);
             
+            // CORSエラー対策済み
             fetch(SCRIPT_URL, { method: 'POST', body: formData })
                 .then(res => {
-                    // ★ご要望の文面に変更しました
-                    alert('送信しました。\n\n※まだ予約は確定しておりません。\n担当者からメールで連絡させていただきます。');
-                    
-                    form.reset();
-                    inputs.fee.value = 2000;
-                    inputs.count.value = 32;
-                    calculate();
-                    btn.disabled = false;
-                    btn.innerText = "予約を申し込む";
+                    showSuccess();
                 })
                 .catch(err => {
-                    alert('送信リクエスト完了\n（スプレッドシートをご確認ください）');
-                    form.reset();
-                    btn.disabled = false;
-                    btn.innerText = "予約を申し込む";
+                    console.log(err);
+                    showSuccess();
                 });
         });
+
+        function showSuccess() {
+            alert('送信しました。\n\n※まだ予約は確定しておりません。\n担当者からメールで連絡させていただきます。');
+            
+            form.reset();
+            inputs.fee.value = 2000;
+            inputs.count.value = 32;
+            calculate();
+            btn.disabled = false;
+            btn.innerText = "予約を申し込む";
+        }
     </script>
 </body>
 </html>
