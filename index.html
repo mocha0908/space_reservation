@@ -33,7 +33,6 @@
             margin-bottom: 20px;
         }
 
-        /* ロゴ画像のスタイル */
         .logo-img {
             max-width: 90%;
             width: 300px;
@@ -51,7 +50,6 @@
         }
         header p { margin-bottom: 0; color: #888; }
 
-        /* リンクのスタイル */
         a.site-link {
             text-decoration: underline;
             font-weight: bold;
@@ -158,7 +156,6 @@
 
     <header>
         <img src="tck_logo_regular_h_trim.png" alt="トレカキングダム ロゴ" class="logo-img">
-        
         <h1>Duel Space Booking</h1>
         <p>トレカキングダム イベント開催申込</p>
     </header>
@@ -216,6 +213,10 @@
                 
                 <label>お名前 (カタカナ) <small>※振込名義人の確認に使用します</small>
                     <input type="text" name="name_kana" required placeholder="例：キングダムタロウ" pattern="[\u30A1-\u30F6ー\s　]*" title="カタカナで入力してください">
+                </label>
+
+                <label>メールアドレス <small>※担当者からの連絡に使用します</small>
+                    <input type="email" name="email" required placeholder="example@gmail.com">
                 </label>
 
                 <div class="grid">
@@ -378,7 +379,9 @@
             
             fetch(SCRIPT_URL, { method: 'POST', body: formData })
                 .then(res => {
-                    alert('✅ 申し込み完了\n\nご入力いただいたメールアドレス（または電話番号）宛に、\n振込先口座のご案内をお送りいたします。');
+                    // ★ご要望の文面に変更しました
+                    alert('送信しました。\n\n※まだ予約は確定しておりません。\n担当者からメールで連絡させていただきます。');
+                    
                     form.reset();
                     inputs.fee.value = 2000;
                     inputs.count.value = 32;
@@ -387,7 +390,7 @@
                     btn.innerText = "予約を申し込む";
                 })
                 .catch(err => {
-                    alert('✅ 送信リクエスト完了');
+                    alert('送信リクエスト完了\n（スプレッドシートをご確認ください）');
                     form.reset();
                     btn.disabled = false;
                     btn.innerText = "予約を申し込む";
