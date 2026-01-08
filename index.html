@@ -32,12 +32,32 @@
             border-bottom: 1px solid #333;
             margin-bottom: 20px;
         }
+
+        /* ロゴ画像のスタイル */
+        .logo-img {
+            max-width: 90%; /* スマホで見切れないように */
+            width: 300px;   /* 基本の幅（必要に応じて数値を変更してください） */
+            height: auto;
+            margin-bottom: 15px;
+        }
+
         h1 {
             font-family: 'Orbitron', sans-serif;
             color: #fff;
             letter-spacing: 2px;
             text-shadow: 0 0 10px var(--primary);
+            font-size: 1.8em;
+            margin-bottom: 10px;
         }
+        header p { margin-bottom: 0; color: #888; }
+
+        /* リンクのスタイル */
+        a.site-link {
+            text-decoration: underline;
+            font-weight: bold;
+            transition: opacity 0.2s;
+        }
+        a.site-link:hover { opacity: 0.8; }
 
         .card {
             background-color: var(--card-bg);
@@ -53,7 +73,6 @@
             color: #fff;
         }
 
-        /* 支払い案内ボックス */
         .notice-box {
             background-color: rgba(0, 229, 255, 0.1);
             border: 1px solid var(--accent-blue);
@@ -63,7 +82,6 @@
             font-size: 0.95em;
         }
 
-        /* ★ルール重要ボックス */
         .rule-box {
             background-color: rgba(255, 0, 85, 0.1);
             border: 1px solid var(--primary);
@@ -139,6 +157,8 @@
 <body>
 
     <header>
+        <img src="tck_logo_regular_h_trim.png" alt="トレカキングダム ロゴ" class="logo-img">
+        
         <h1>Duel Space Booking</h1>
         <p>トレカキングダム イベント開催申込</p>
     </header>
@@ -166,7 +186,11 @@
                 <h5>⚠️ 参加賞・会員登録について（重要）</h5>
                 <ul style="margin-bottom: 0; padding-left: 20px;">
                     <li><strong>参加者1人につき「最低 250pt」の参加賞配布が必須</strong>です。<br><small>（例：32名参加の場合、250pt×32名＝8,000ptは必ず参加賞として使用します）</small></li>
-                    <li>ポイント付与のため、<strong>参加者全員の「トレカキングダム通販サイト」への会員登録が必須</strong>となります。</li>
+                    <li>
+                        ポイント付与のため、参加者全員の<br>
+                        <strong><a href="https://shop.japan-toreca.com/" target="_blank" class="site-link" style="color:var(--primary);">「トレカキングダム通販サイト」</a></strong>
+                        への会員登録が必須となります。
+                    </li>
                     <li>主催者様は、事前に参加者へ会員登録の周知をお願いいたします。</li>
                 </ul>
             </div>
@@ -174,7 +198,9 @@
             <div class="notice-box">
                 <strong>💳 会場費のお支払いについて</strong><br>
                 会場費32,000円は<strong>【銀行振込】</strong>にて事前にお支払いいただきます。<br>
-                入金確認後、ポイントを付与いたします。<br>
+                入金確認後、
+                <a href="https://shop.japan-toreca.com/" target="_blank" class="site-link" style="color:var(--accent-blue);">「トレカキングダム通販サイト」</a>
+                で使える32,000ポイントを付与いたします。<br>
                 <small>※振込先口座は、お申し込み後にメールにてご案内いたします。</small>
             </div>
         </section>
@@ -269,7 +295,7 @@
     </main>
 
     <script>
-        // ★ここにGASのURLを貼り付け（変更なし）
+        // 設定済みのGAS URL
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyb1L9lbXiCFtR4hypvZSurkCHRLYwZIHO4vRxtU8ipyElckZGV5az30Kn-Dcr74qrN/exec';
 
         // --- 変数定義 ---
@@ -327,7 +353,6 @@
                 displays.remPoints.style.color = "#00e5ff";
             }
 
-            // シミュレーション結果を送らない修正（タイトルと備考のみ）
             let combinedText = `【大会名・用途】\n${inputs.eventTitle.value}\n\n` +
                                `【備考・その他】\n${inputs.userMemo.value}`;
             
