@@ -59,8 +59,23 @@
             border: 1px solid var(--accent-blue);
             padding: 15px;
             border-radius: 8px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             font-size: 0.95em;
+        }
+
+        /* ★ルール重要ボックス */
+        .rule-box {
+            background-color: rgba(255, 0, 85, 0.1);
+            border: 1px solid var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 0.95em;
+        }
+        .rule-box h5 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            font-weight: bold;
         }
 
         details.sim-box {
@@ -132,7 +147,7 @@
 
         <section class="card">
             <h3>プラン概要</h3>
-            <div class="grid">
+            <div class="grid" style="margin-bottom: 20px;">
                 <div>
                     <small>会場レンタル料</small><br>
                     <strong style="font-size:1.2em;">¥32,000</strong>
@@ -147,10 +162,19 @@
                 </div>
             </div>
             
+            <div class="rule-box">
+                <h5>⚠️ 参加賞・会員登録について（重要）</h5>
+                <ul style="margin-bottom: 0; padding-left: 20px;">
+                    <li><strong>参加者1人につき「最低 250pt」の参加賞配布が必須</strong>です。<br><small>（例：32名参加の場合、250pt×32名＝8,000ptは必ず参加賞として使用します）</small></li>
+                    <li>ポイント付与のため、<strong>参加者全員の「トレカキングダム通販サイト」への会員登録が必須</strong>となります。</li>
+                    <li>主催者様は、事前に参加者へ会員登録の周知をお願いいたします。</li>
+                </ul>
+            </div>
+
             <div class="notice-box">
                 <strong>💳 会場費のお支払いについて</strong><br>
                 会場費32,000円は<strong>【銀行振込】</strong>にて事前にお支払いいただきます。<br>
-                入金確認後、<strong>「トレカキングダム通販サイト」で使える32,000ポイント</strong>を付与いたします。<br>
+                入金確認後、ポイントを付与いたします。<br>
                 <small>※振込先口座は、お申し込み後にメールにてご案内いたします。</small>
             </div>
         </section>
@@ -232,11 +256,10 @@
                 <hr style="border-color:#333; margin: 20px 0;">
 
                 <div style="font-size: 0.9em;">
-                    <label><input type="checkbox" required> 参加者全員の「会員登録」が必須です</label>
+                    <label><input type="checkbox" required> <strong>参加者全員の「会員登録」を必須とすることに同意します</strong></label>
                     <label><input type="checkbox" required> 店舗スタッフは運営補助を行いません</label>
                     <label><input type="checkbox" required> トイレ・モニター(HDMI/Type-C)使用可</label>
-                    
-                    <label><input type="checkbox" required> <strong>会場費32,000円を指定口座へ振り込むことに同意します</strong></label>
+                    <label><input type="checkbox" required> 会場費32,000円を指定口座へ振り込むことに同意します</label>
                 </div>
 
                 <button type="submit" id="submitBtn">予約を申し込む</button>
